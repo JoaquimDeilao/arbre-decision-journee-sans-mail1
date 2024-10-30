@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arbre de Décision - Journée sans Mail</title>
+  <style>
+    body { background-color: #ffcd00; color: #ffffff; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    .question-box { padding: 20px; margin: 20px auto; border-radius: 8px; background-color: #000000; width: 50%; max-width: 400px; }
+    .button { margin: 10px; padding: 10px 20px; background-color: #ffffff; color: #000000; border: none; border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Arbre de Décision - Journée sans Mail</h1>
+  <div id="decision-tree" class="question-box">
+    <p id="question-text">Besoin d’envoyer un message ?</p>
+    <button class="button" onclick="nextStep('yes')">Oui</button>
+    <button class="button" onclick="nextStep('no')">Non</button>
+  </div>
+
+  <script>
+    let currentStep = "start";
+
+    function nextStep(answer) {
+      switch(currentStep) {
+        case "start":
+          if(answer === "yes") {
+            document.getElementById("question-text").innerText = "Le message est-il urgent ?";
+            currentStep = "urgent";
+          } else {
+            document.getElementById("question-text").innerText = "Pas besoin d’envoyer un message.";
+            document.getElementById("decision-tree").innerHTML += "<button class='button' onclick='reset()'>Recommencer</button>";
+          }
+          break;
+
+        case "urgent":
+          document.getElementById("question-text").innerText = answer === "yes" ? 
+            "Privilégiez un appel téléphonique pour une réponse rapide." : 
+            "Peut-on se voir en personne ?";
+          currentStep = answer === "yes" ? "end" : "inPerson";
+          break;
+
+        case "inPerson":
+          document.getElementById("question-text").innerText = answer === "yes" ? 
+            "Privilégiez un échange en face-à-face." : 
+            "Est-il important d’obtenir une réponse rapide ?";
+          currentStep = answer === "yes" ? "end" : "quickResponse";
+          break;
+
+        case "quickResponse":
+          document.getElementById("question-text").innerText = answer === "yes" ? 
+            "Utilisez un message instantané pour une réponse rapide." : 
+            "Faut-il garder une trace de cet échange ?";
+          currentStep = answer === "yes" ? "end" : "traceability";
+          break;
+
+        case "traceability":
+          document.getElementById("question-text").innerText = answer === "yes" ? 
+            "Envoyez un email pour garder une trace." : 
+            "La discussion concerne-t-elle plusieurs personnes ?";
+          currentStep = answer === "yes" ? "end" : "groupMeeting";
+          break;
+
+        case "groupMeeting":
+          document.getElementById("question-text").innerText = answer === "yes" ? 
+            "Organisez une réunion rapide pour les échanges en groupe." : 
+            "Privilégiez un message ou une note courte.";
+          currentStep = "end";
+          break;
+
+        case "end":
+          document.getElementById("decision-tree").innerHTML += "<button class='button' onclick='reset()'>Recommencer</button>";
+          break;
+      }
+    }
+
+    function reset() {
+      currentStep = "start";
+      document.getElementById("decision-tree").innerHTML = `
+        <p id="question-text">Besoin d’envoyer un message ?</p>
+        <button class="button" onclick="nextStep('yes')">Oui</button>
+        <button class="button" onclick="nextStep('no')">Non</button>
+      `;
+    }
+  </script>
+</body>
+</html>
